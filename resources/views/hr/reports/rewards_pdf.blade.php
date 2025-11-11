@@ -1,8 +1,8 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Rewards and Penalties Report</title>
+    <title>{{ config('app.name') }} — Rewards & Penalties Report</title>
     <style>
         body { font-family: DejaVu Sans, sans-serif; font-size: 12px; direction: ltr; }
         .header { text-align: center; margin-bottom: 10px; }
@@ -16,8 +16,8 @@
 </head>
 <body>
     <div class="header">
-        <h2>Rewards & Penalties Report</h2>
-        <div class="small">Generated at: {{ \Carbon\Carbon::now()->format('Y-m-d H:i') }}</div>
+        <h2>{{ config('app.name') }} — Rewards & Penalties Report</h2>
+        <div class="small">Generated at: {{ \Carbon\Carbon::now()->format('Y-m-d H:i:s') }}</div>
     </div>
 
     @if(!empty($filters))

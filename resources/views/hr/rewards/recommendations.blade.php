@@ -18,12 +18,18 @@
             </thead>
             <tbody>
                 @foreach($suggestions as $s)
+                    @php
+                        $emp = App\Models\Employee::find($s['employee_id']);
+                        $empName = $emp ? trim(($emp->first_name ?? '') . ' ' . ($emp->last_name ?? '')) : ('Employee #' . ($s['employee_id'] ?? ''));
+                        $amount = number_format($s['suggested_amount'] ?? 0, 2);
+                        $meta = isset($s['metadata']) ? json_encode($s['metadata'], JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE) : '';
+                    @endphp
                 <tr>
-                    <td>{{ optional(App\Models\Employee::find($s['employee_id']))->first_name ?? $s['employee_id'] }} {{ optional(App\Models\Employee::find($s['employee_id']))->last_name ?? '' }}</td>
-                    <td>{{ $s['type'] }}</td>
-                    <td>{{ $s['score'] }}</td>
-                    <td>{{ number_format($s['suggested_amount'],2) }}</td>
-                    <td><pre class="text-xs">{{ json_encode($s['metadata']) }}</pre></td>
+                    <td>{{ $empName }}</td>
+                    <td>{{ ucfirst($s['type'] ?? '') }}</td>
+                    <td>{{ $s['score'] ?? '' }}</td>
+                    <td>{{ $amount }}</td>
+                    <td><pre class="text-xs">{{ $meta }}</pre></td>
                 </tr>
                 @endforeach
             </tbody>

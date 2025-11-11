@@ -1,14 +1,14 @@
 @php
     // English payroll report
-    function fmt($v){ return number_format($v,2); }
+    function fmt($v){ return number_format($v ?? 0,2); } // handle nulls safely
 @endphp
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <title>Payroll Report - {{ $year }}-{{ $month }}</title>
     <style>
-        body{font-family:DejaVu Sans, Arial, sans-serif}
+        body{font-family:DejaVu Sans, Arial, sans-serif; direction:ltr;}
         table{width:100%;border-collapse:collapse}
         th,td{border:1px solid #ddd;padding:8px;text-align:left}
         th{background:#f3f4f6}

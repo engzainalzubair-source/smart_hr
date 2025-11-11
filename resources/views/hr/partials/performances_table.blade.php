@@ -2,25 +2,27 @@
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div>
-            <h2 class="text-2xl font-extrabold text-gray-800">تقارير الأداء</h2>
-            <p class="text-sm text-gray-500">تحليل درجات الأداء المركبة، التوصيات والدورات المقترحة. يمكنك تصدير التقرير أو طباعته بسهولة.</p>
+            <h2 class="text-2xl font-extrabold text-gray-800">Performance Reports</h2>
+            <p class="text-sm text-gray-500">Composite performance scoring, recommendations and suggested courses. You can export or print the report easily.</p>
         </div>
 
         <!-- Filters & Actions -->
         <div class="flex flex-wrap items-center gap-2">
             <form id="perfFilterForm" method="GET" action="{{ route('hr.performances.index') }}" class="flex items-center gap-2 flex-wrap">
-                <input name="q" id="perfSearch" type="search" value="{{ request('q') }}" placeholder="بحث باسم الموظف..." class="px-3 py-2 border rounded-md text-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500" />
+                <input name="q" id="perfSearch" type="search" value="{{ request('q') }}" placeholder="Search by employee name..." class="px-3 py-2 border rounded-md text-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500" />
                 <select name="department_id" class="px-3 py-2 border rounded-md text-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
-                    <option value="">كل الأقسام</option>
+                    <option value="">All Departments</option>
                     @foreach($departments ?? [] as $dep)
                         <option value="{{ $dep->id }}" {{ request('department_id') == $dep->id ? 'selected' : '' }}>{{ $dep->name }}</option>
                     @endforeach
                 </select>
-                <button type="submit" class="px-3 py-2 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-700 transition">تصفية</button>
+                <button type="submit" class="px-3 py-2 bg-indigo-600 text-white rounded-md text-sm hover:bg-indigo-700 transition">Filter</button>
             </form>
 
             @php $exportUrl = route('hr.performances.exportPdf') . (request()->getQueryString() ? ('?' . request()->getQueryString()) : ''); @endphp
-            <a href="{{ $exportUrl }}" target="_blank" id="exportPdfBtn" class="px-3 py-2 bg-red-600 text-white rounded-md text-sm hover:bg-red-700 transition">تصدير PDF</a>
+            <a href="{{ $exportUrl }}" target="_blank" id="exportPdfBtn" class="px-3 py-2 bg-red-600 text-white rounded-md text-sm hover:bg-red-700 transition">Export PDF</a>
+            <button id="exportCsvBtn" type="button" class="px-3 py-2 bg-gray-700 text-white rounded-md text-sm hover:bg-gray-800 transition">Export CSV</button>
+            <button id="printBtn" type="button" class="px-3 py-2 bg-gray-500 text-white rounded-md text-sm hover:bg-gray-600 transition">Print</button>
         </div>
     </div>
 
@@ -30,8 +32,8 @@
         <div class="col-span-2 space-y-4">
             <!-- Chart Section -->
             <div>
-                <h3 class="text-md font-semibold mb-1 text-gray-700">أداء مركب (آخر {{ 90 }} يوم)</h3>
-                <p class="text-sm text-gray-500 mb-2">الدرجة المركبة تجمع الأداء والتزام الحضور لتصنيف الموظفين.</p>
+                <h3 class="text-md font-semibold mb-1 text-gray-700">Composite Performance (Last {{ 90 }} days)</h3>
+                <p class="text-sm text-gray-500 mb-2">Composite score combines performance and attendance to classify employees.</p>
                 <div class="relative h-56 bg-white p-3 rounded shadow-sm border">
                     <canvas id="chartComposite"></canvas>
                 </div>
@@ -43,11 +45,11 @@
                     <thead class="bg-gray-50 text-gray-600 text-sm">
                         <tr>
                             <th class="p-3 border">#</th>
-                            <th class="p-3 border">الموظف</th>
-                            <th class="p-3 border">متوسط الأداء</th>
-                            <th class="p-3 border">نسبة الحضور</th>
-                            <th class="p-3 border">الدرجة المركبة</th>
-                            <th class="p-3 border">توصية</th>
+                            <th class="p-3 border">Employee</th>
+                            <th class="p-3 border">Avg Performance</th>
+                            <th class="p-3 border">Attendance Rate</th>
+                            <th class="p-3 border">Composite Score</th>
+                            <th class="p-3 border">Recommendation</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -158,12 +160,12 @@
         const el = document.getElementById('perfReport');
         const w = window.open('', '_blank');
         const style = `<style>
-            body{font-family:sans-serif;direction:rtl;}
+            body{font-family:sans-serif;direction:ltr;}
             table{width:100%;border-collapse:collapse;}
-            td,th{border:1px solid #ddd;padding:8px;text-align:right;}
+            td,th{border:1px solid #ddd;padding:8px;text-align:left;}
             th{background:#f3f4f6}
         </style>`;
-        w.document.write('<html><head><title>تقرير الأداء</title>'+style+'</head><body>');
+        w.document.write('<html><head><title>Performance Report</title>'+style+'</head><body>');
         w.document.write(el.innerHTML);
         w.document.write('</body></html>');
         w.document.close();

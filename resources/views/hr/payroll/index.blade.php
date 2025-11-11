@@ -4,18 +4,18 @@
     <div class="bg-white p-6 rounded-xl shadow-lg">
         <div class="flex items-center justify-between mb-4">
             <div>
-                <h2 class="text-2xl font-extrabold text-gray-800">صرف الرواتب</h2>
-                <p class="text-sm text-gray-500">قائمة الرواتب المتوقعة حسب الشهر، مع إمكانية تسجيل صرف وطباعة سند.</p>
+                <h2 class="text-2xl font-extrabold text-gray-800">Payroll</h2>
+                <p class="text-sm text-gray-500">Expected payroll list by month, with options to record disbursement and print slips.</p>
             </div>
 
             <div class="flex items-center gap-2">
                 <form method="GET" action="{{ route('hr.payroll.index') }}" class="inline-flex items-center gap-2">
                     <input name="year" type="number" value="{{ $year }}" class="px-2 py-1 border rounded text-sm w-20" />
                     <input name="month" type="number" min="1" max="12" value="{{ $month }}" class="px-2 py-1 border rounded text-sm w-20" />
-                    <button class="px-3 py-1 bg-indigo-600 text-white rounded text-sm">عرض</button>
+                    <button class="px-3 py-1 bg-indigo-600 text-white rounded text-sm">View</button>
                 </form>
                     {{-- Export payroll report for selected period --}}
-                    <a href="{{ route('hr.payroll.export', ['year' => $year, 'month' => $month]) }}" class="px-3 py-1 bg-red-600 text-white rounded text-sm">تصدير تقرير</a>
+                    <a href="{{ route('hr.payroll.export', ['year' => $year, 'month' => $month]) }}" class="px-3 py-1 bg-red-600 text-white rounded text-sm">Export Report</a>
             </div>
         </div>
             @if(session('status'))
@@ -27,14 +27,14 @@
                 <thead class="bg-gray-50 text-gray-600 text-sm">
                     <tr>
                         <th class="p-3 border">#</th>
-                        <th class="p-3 border">الموظف</th>
-                        <th class="p-3 border">الراتب الأساسي</th>
-                        <th class="p-3 border">المكافآت</th>
-                        <th class="p-3 border">الخصومات</th>
-                        <th class="p-3 border">تعديلات</th>
-                        <th class="p-3 border">الصافي</th>
-                        <th class="p-3 border">الحالة</th>
-                        <th class="p-3 border">إجراءات</th>
+                        <th class="p-3 border">Employee</th>
+                        <th class="p-3 border">Base Salary</th>
+                        <th class="p-3 border">Bonuses</th>
+                        <th class="p-3 border">Deductions</th>
+                        <th class="p-3 border">Adjustments</th>
+                        <th class="p-3 border">Net</th>
+                        <th class="p-3 border">Status</th>
+                        <th class="p-3 border">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,20 +51,20 @@
                             <td class="p-3 text-sm">
                                 <div>
                                     @if(!empty($row['salary']))
-                                        <span class="text-green-600">صرف</span>
+                                        <span class="text-green-600">Paid</span>
                                     @else
-                                        <span class="text-yellow-600">لم يصرف</span>
+                                        <span class="text-yellow-600">Not Paid</span>
                                     @endif
                                     @if(!empty($row['absence_count']) && $row['absence_count'] > 0)
-                                        <div class="text-xs text-gray-500">غيابات: {{ $row['absence_count'] }} (خصم {{ number_format($row['absence_deduction'],2) }})</div>
+                                        <div class="text-xs text-gray-500">Absences: {{ $row['absence_count'] }} (Deduction {{ number_format($row['absence_deduction'],2) }})</div>
                                     @endif
                                 </div>
                             </td>
                             <td class="p-3 text-sm">
                                 <div class="flex items-center gap-2">
-                                    <a href="{{ route('hr.payroll.show', ['employee' => $emp->id, 'year' => $year, 'month' => $month]) }}" class="px-3 py-1 bg-gray-100 rounded text-sm">تفاصيل</a>
+                                    <a href="{{ route('hr.payroll.show', ['employee' => $emp->id, 'year' => $year, 'month' => $month]) }}" class="px-3 py-1 bg-gray-100 rounded text-sm">Details</a>
                                     @if(!empty($row['salary']))
-                                        <a href="{{ route('hr.payroll.print', $row['salary']->id) }}" target="_blank" class="px-3 py-1 bg-indigo-600 text-white rounded text-sm">طباعة</a>
+                                        <a href="{{ route('hr.payroll.print', $row['salary']->id) }}" target="_blank" class="px-3 py-1 bg-indigo-600 text-white rounded text-sm">Print</a>
                                     @endif
                                 </div>
                             </td>
@@ -77,8 +77,8 @@
             {{-- If controller flashed print_salary_id but popup blocked, show a visible link/button --}}
             @if(session('print_salary_id'))
                 <div class="mt-4 p-3 bg-yellow-50 border rounded">
-                    <span class="text-sm text-gray-700">تم تسجيل صرف الراتب. إذا لم تُفتَح نافذة الطباعة تلقائياً اضغط:</span>
-                    <a href="{{ url('/hr/payroll/print/' . session('print_salary_id')) }}" target="_blank" class="ml-3 px-3 py-1 bg-indigo-600 text-white rounded text-sm">طباعة السند</a>
+                    <span class="text-sm text-gray-700">Salary disbursement recorded. If the print window did not open automatically click:</span>
+                    <a href="{{ url('/hr/payroll/print/' . session('print_salary_id')) }}" target="_blank" class="ml-3 px-3 py-1 bg-indigo-600 text-white rounded text-sm">Print Slip</a>
                 </div>
             @endif
         </div>

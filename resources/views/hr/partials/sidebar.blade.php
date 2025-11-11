@@ -13,8 +13,8 @@
                 ['icon' => 'fa-calendar-check', 'route' => 'hr.attendances.index', 'pattern' => 'hr.attendances.*', 'label' => 'Attendance'],
                 ['icon' => 'fa-chart-pie', 'route' => 'hr.performances.index', 'pattern' => 'hr.performances.*', 'label' => 'Performance'],
                 ['icon' => 'fa-gift', 'route' => 'hr.rewards.index', 'pattern' => 'hr.rewards.*', 'label' => 'Rewards'],
-                ['icon' => 'fa-money-bill-transfer', 'route' => 'hr.payroll.index', 'pattern' => 'hr.payroll.*', 'label' => 'صرف الرواتب'],
-                ['icon' => 'fa-building', 'route' => 'hr.departments.index', 'pattern' => 'hr.departments.*', 'label' => 'الأقسام'],
+                ['icon' => 'fa-money-bill-transfer', 'route' => 'hr.payroll.index', 'pattern' => 'hr.payroll.*', 'label' => 'Payroll'],
+                ['icon' => 'fa-building', 'route' => 'hr.departments.index', 'pattern' => 'hr.departments.*', 'label' => 'Departments'],
                 ['icon' => 'fa-gear', 'route' => 'hr.settings.index', 'pattern' => 'hr.settings.*', 'label' => 'Settings'],
             ];
         @endphp

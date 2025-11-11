@@ -47,7 +47,7 @@
                     </div>
 
                     <div class="bg-gradient-to-r from-cyan-500 to-sky-400 text-white rounded-xl p-5 shadow hover:shadow-lg transition">
-                        <p class="text-sm opacity-90">إجمالي الأقسام</p>
+                        <p class="text-sm opacity-90">Total Departments</p>
                         <h2 class="text-3xl font-bold mt-1">{{ $totalDepartments ?? 0 }}</h2>
                     </div>
 
@@ -66,9 +66,9 @@
                     <div class="mt-6 bg-gray-50 p-4 rounded">
                         <h4 class="text-sm font-medium text-gray-700 mb-2">30-day Performance Trend</h4>
                         <div class="flex items-center justify-between mb-3">
-                            <div class="text-sm text-gray-600">متوسط آخر 30 يوماً: <span class="font-semibold">{{ number_format($avgPerformance30d ?? 0,1) }}%</span></div>
+                            <div class="text-sm text-gray-600">30-day Average: <span class="font-semibold">{{ number_format($avgPerformance30d ?? 0,1) }}%</span></div>
                             @if(isset($topPerformerName))
-                                <div class="text-sm text-gray-600">أفضل أداء: <span class="font-semibold">{{ $topPerformerName }} ({{ $topPerformerAvg }}%)</span></div>
+                                <div class="text-sm text-gray-600">Top Performer: <span class="font-semibold">{{ $topPerformerName }} ({{ $topPerformerAvg }}%)</span></div>
                             @endif
                         </div>
                         <div class="relative h-48">
@@ -97,7 +97,7 @@
                                     </li>
                                 @endforeach
                                 @if(empty($topRewards) || count($topRewards) == 0)
-                                    <li class="text-sm text-gray-500">لا توجد بيانات كافية</li>
+                                    <li class="text-sm text-gray-500">Not enough data</li>
                                 @endif
                             </ul>
                         </div>
@@ -109,15 +109,15 @@
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <form method="GET" action="{{ route('hr.employees.create') }}" class="inline-fetch">
                             <input type="hidden" name="inline" value="1" />
-                            <button type="submit" data-tab="employees" data-inline="true" class="block w-full rounded-lg p-5 bg-gradient-to-r from-indigo-500 to-indigo-400 text-white hover:opacity-90">إضافة موظف</button>
+                            <button type="submit" data-tab="employees" data-inline="true" class="block w-full rounded-lg p-5 bg-gradient-to-r from-indigo-500 to-indigo-400 text-white hover:opacity-90">Add Employee</button>
                         </form>
                         <form method="GET" action="{{ route('hr.attendances.create') }}" class="inline-fetch">
                             <input type="hidden" name="inline" value="1" />
-                            <button type="submit" data-tab="attendance" data-inline="true" class="block w-full rounded-lg p-5 bg-green-500 text-white hover:opacity-90">تسجيل حضور</button>
+                            <button type="submit" data-tab="attendance" data-inline="true" class="block w-full rounded-lg p-5 bg-green-500 text-white hover:opacity-90">Record Attendance</button>
                         </form>
                         <form method="GET" action="{{ route('hr.rewards.create') }}" class="inline-fetch">
                             <input type="hidden" name="inline" value="1" />
-                            <button type="submit" data-tab="rewards" data-inline="true" class="block w-full rounded-lg p-5 bg-pink-500 text-white hover:opacity-90">إضافة مكافأة/عقوبة</button>
+                            <button type="submit" data-tab="rewards" data-inline="true" class="block w-full rounded-lg p-5 bg-pink-500 text-white hover:opacity-90">Add Reward/Penalty</button>
                         </form>
                     </div>
                 </div>
@@ -125,7 +125,7 @@
                 <!-- Today's present employees summary -->
                 @if(isset($presentEmployees) && $presentEmployees->count())
                 <div class="bg-white rounded-xl p-6 shadow mt-6">
-                    <h3 class="text-lg font-semibold mb-4">حضروا اليوم</h3>
+                    <h3 class="text-lg font-semibold mb-4">Present Today</h3>
                     <form class="space-y-2">
                         @foreach($presentEmployees as $p)
                             <div class="flex items-center justify-between p-2 border rounded">
@@ -352,7 +352,7 @@
                             const fetchOpts = { method: method, body: fm, headers: { 'X-Requested-With': 'XMLHttpRequest' } };
                             const resp = await fetch(action, Object.assign(fetchOpts, { credentials: 'same-origin' }));
                             if (resp.status === 419) {
-                                modalBody.innerHTML = '<div class="p-4 text-red-600">جلسة انتهت، أعد تحميل الصفحة ثم سجّل الدخول.</div>';
+                                modalBody.innerHTML = '<div class="p-4 text-red-600">Session expired. Please reload the page and sign in again.</div>';
                                 return;
                             }
                             if (resp.ok) {
@@ -360,7 +360,7 @@
                                 hideModal();
                                 if (inline && tab) {
                                     await refreshTab(tab);
-                                } else {I.
+                                } else {
                                     location.reload();
                                 }
                             } else {
@@ -417,7 +417,7 @@
             try {
                 const resp = await fetch(action, { method: 'POST', body: fm, headers: { 'X-Requested-With': 'XMLHttpRequest' }, credentials: 'same-origin' });
                 if (resp.status === 419) {
-                    showToast('جلسة انتهت، أعد تحميل الصفحة ثم سجّل الدخول.', 'error');
+                    showToast('Session expired. Please reload the page and sign in again.', 'error');
                     return;
                 }
                 if (resp.ok) {
@@ -428,13 +428,13 @@
                     // if server returned JSON, try to parse and alert
                     try {
                         const j = await resp.json();
-                        showToast(j.message || 'تمت العملية', 'success');
+                        showToast(j.message || 'Operation completed', 'success');
                     } catch (err) {
-                        showToast('خطأ: ' + (text || resp.status), 'error');
+                        showToast('Error: ' + (text || resp.status), 'error');
                     }
                 }
             } catch (err) {
-                showToast('خطأ في الاتصال: ' + err.message, 'error');
+                showToast('Connection error: ' + err.message, 'error');
             }
         });
 
@@ -449,19 +449,19 @@
             try {
                 const resp = await fetch(action, { method: 'POST', body: fm, headers: { 'X-Requested-With': 'XMLHttpRequest' }, credentials: 'same-origin' });
                 if (resp.status === 419) {
-                    showToast('جلسة انتهت، أعد تحميل الصفحة ثم سجّل الدخول.', 'error');
+                    showToast('Session expired. Please reload the page and sign in again.', 'error');
                     return;
                 }
                 if (resp.ok) {
-                    showToast('تمت العملية بنجاح', 'success');
+                    showToast('Operation successful', 'success');
                     const tab = form.dataset.tab || 'employees';
                     await refreshTab(tab);
                 } else {
                     const text = await resp.text();
-                    showToast('خطأ: ' + (text || resp.status), 'error');
+                    showToast('Error: ' + (text || resp.status), 'error');
                 }
             } catch (err) {
-                showToast('خطأ في الاتصال: ' + err.message, 'error');
+                showToast('Connection error: ' + err.message, 'error');
             }
         });
 
@@ -476,7 +476,7 @@
             if (statusInput) statusInput.value = checked ? 'present' : 'absent';
             // update label text (last span inside label)
             const labelText = form.querySelector('label span:last-child');
-            if (labelText) labelText.textContent = checked ? 'حاضر' : 'غائب';
+            if (labelText) labelText.textContent = checked ? 'Present' : 'Absent';
             // animate dot (optional) - toggle bg color
             const switchBg = form.querySelector('span.w-12');
             const dot = form.querySelector('.dot');

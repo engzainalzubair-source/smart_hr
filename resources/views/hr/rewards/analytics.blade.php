@@ -25,7 +25,7 @@
 
     <div class="mt-6">
         <!-- Recommendations are available inline on the rewards list page. -->
-        <a href="{{ route('hr.rewards.index') }}" class="inline-block ml-2 px-4 py-2 bg-gray-200 text-gray-800 rounded">العودة إلى القائمة</a>
+        <a href="{{ route('hr.rewards.index') }}" class="inline-block ml-2 px-4 py-2 bg-gray-200 text-gray-800 rounded">Back to list</a>
     </div>
 </div>
 @endsection

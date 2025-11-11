@@ -212,7 +212,7 @@
                             const fetchOpts = { method: method, body: fm, headers: { 'X-Requested-With': 'XMLHttpRequest' } };
                             const resp = await fetch(action, Object.assign(fetchOpts, { credentials: 'same-origin' }));
                             if (resp.status === 419) {
-                                modalBody.innerHTML = '<div class="p-4 text-red-600">جلسة انتهت، أعد تحميل الصفحة ثم سجّل الدخول.</div>';
+                                modalBody.innerHTML = '<div class="p-4 text-red-600">Session expired. Please reload the page and sign in again.</div>';
                                 return;
                             }
                             if (resp.ok) {
@@ -220,7 +220,7 @@
                                 hideModal();
                                 if (inline && tab) {
                                     await refreshTab(tab);
-                                } else {I.
+                                } else {
                                     location.reload();
                                 }
                             } else {
@@ -277,7 +277,7 @@
             try {
                 const resp = await fetch(action, { method: 'POST', body: fm, headers: { 'X-Requested-With': 'XMLHttpRequest' }, credentials: 'same-origin' });
                 if (resp.status === 419) {
-                    showToast('جلسة انتهت، أعد تحميل الصفحة ثم سجّل الدخول.', 'error');
+                    showToast('Session expired. Please reload the page and sign in again.', 'error');
                     return;
                 }
                 if (resp.ok) {
@@ -288,13 +288,13 @@
                     // if server returned JSON, try to parse and alert
                     try {
                         const j = await resp.json();
-                        showToast(j.message || 'تمت العملية', 'success');
+                        showToast(j.message || 'Operation completed', 'success');
                     } catch (err) {
-                        showToast('خطأ: ' + (text || resp.status), 'error');
+                        showToast('Error: ' + (text || resp.status), 'error');
                     }
                 }
             } catch (err) {
-                showToast('خطأ في الاتصال: ' + err.message, 'error');
+                showToast('Connection error: ' + err.message, 'error');
             }
         });
 
@@ -309,19 +309,19 @@
             try {
                 const resp = await fetch(action, { method: 'POST', body: fm, headers: { 'X-Requested-With': 'XMLHttpRequest' }, credentials: 'same-origin' });
                 if (resp.status === 419) {
-                    showToast('جلسة انتهت، أعد تحميل الصفحة ثم سجّل الدخول.', 'error');
+                    showToast('Session expired. Please reload the page and sign in again.', 'error');
                     return;
                 }
                 if (resp.ok) {
-                    showToast('تمت العملية بنجاح', 'success');
+                    showToast('Operation successful', 'success');
                     const tab = form.dataset.tab || 'employees';
                     await refreshTab(tab);
                 } else {
                     const text = await resp.text();
-                    showToast('خطأ: ' + (text || resp.status), 'error');
+                    showToast('Error: ' + (text || resp.status), 'error');
                 }
             } catch (err) {
-                showToast('خطأ في الاتصال: ' + err.message, 'error');
+                showToast('Connection error: ' + err.message, 'error');
             }
         });
 
@@ -336,7 +336,7 @@
             if (statusInput) statusInput.value = checked ? 'present' : 'absent';
             // update label text (last span inside label)
             const labelText = form.querySelector('label span:last-child');
-            if (labelText) labelText.textContent = checked ? 'حاضر' : 'غائب';
+            if (labelText) labelText.textContent = checked ? 'Present' : 'Absent';
             // animate dot (optional) - toggle bg color
             const switchBg = form.querySelector('span.w-12');
             const dot = form.querySelector('.dot');

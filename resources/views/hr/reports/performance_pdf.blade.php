@@ -1,26 +1,26 @@
 <!doctype html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="utf-8">
-    <title>تقرير الأداء</title>
+    <title>Composite Performance Report</title>
     <style>
-        body{font-family: DejaVu Sans, sans-serif; direction: rtl; color:#111}
+        body{font-family: DejaVu Sans, sans-serif; direction: ltr; color:#111}
         .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
         .title{font-size:20px;font-weight:700}
         .meta{font-size:12px;color:#555}
         table{width:100%;border-collapse:collapse;margin-top:8px}
-        th,td{border:1px solid #ddd;padding:8px;text-align:right;font-size:12px}
+        th,td{border:1px solid #ddd;padding:8px;text-align:left;font-size:12px}
         th{background:#f3f4f6}
     </style>
 </head>
 <body>
     <div class="header">
         <div>
-            <div class="title">تقرير الأداء المركب</div>
-            <div class="meta">الفترة: آخر 90 يوم</div>
+            <div class="title">Composite Performance Report</div>
+            <div class="meta">Period: Last 90 days</div>
         </div>
         <div>
-            <div class="meta">توليد: {{ now()->toDateTimeString() }}</div>
+            <div class="meta">Generated: {{ now()->toDateTimeString() }}</div>
         </div>
     </div>
 
@@ -28,10 +28,10 @@
         <thead>
             <tr>
                 <th>#</th>
-                <th>الموظف</th>
-                <th>متوسط الأداء</th>
-                <th>نسبة الحضور</th>
-                <th>الدرجة المركبة</th>
+                <th>Employee</th>
+                <th>Avg Performance</th>
+                <th>Attendance Rate</th>
+                <th>Composite Score</th>
             </tr>
         </thead>
         <tbody>
@@ -49,9 +49,9 @@
 
     @if(!empty($filters['q']) || !empty($filters['department_id']))
         <div style="margin-top:12px;font-size:12px;color:#333">
-            <strong>فلاتر مطبقة:</strong>
-            @if(!empty($filters['q'])) كَلمة: "{{ $filters['q'] }}" @endif
-            @if(!empty($filters['department_id'])) - القسم: {{ optional(App\Models\Department::find($filters['department_id']))->name }} @endif
+            <strong>Applied Filters:</strong>
+            @if(!empty($filters['q'])) Keyword: "{{ $filters['q'] }}" @endif
+            @if(!empty($filters['department_id'])) - Department: {{ optional(App\Models\Department::find($filters['department_id']))->name }} @endif
         </div>
     @endif
 
