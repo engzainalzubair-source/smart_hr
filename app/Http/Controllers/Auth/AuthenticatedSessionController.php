@@ -35,12 +35,7 @@ class AuthenticatedSessionController extends Controller
         // - hr -> hr dashboard
         // - otherwise: treat as employee and redirect to their profile (by matching email)
         if (method_exists($user, 'hasRole')) {
-            if ($user->hasRole('admin')) {
-                return redirect()->intended(route('dashboard', absolute: false));
-            }
-            if ($user->hasRole('hr')) {
-                return redirect()->intended(route('hr.dashboard', absolute: false));
-            }
+            return redirect()->intended(route('hr.dashboard', absolute: false));
         }
 
         // Employee: attempt to find an Employee record by the user's email.
@@ -54,7 +49,7 @@ class AuthenticatedSessionController extends Controller
         }
 
         // Fallback to default dashboard
-        return redirect()->intended(route('dashboard', absolute: false));
+        return redirect()->intended(route('hr.dashboard', absolute: false));
     }
 
     /**
