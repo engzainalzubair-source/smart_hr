@@ -63,14 +63,7 @@
                             <td class="p-3 text-sm">
                                 <div class="flex items-center gap-2">
                                     <a href="{{ route('hr.payroll.show', ['employee' => $emp->id, 'year' => $year, 'month' => $month]) }}" class="px-3 py-1 bg-gray-100 rounded text-sm">تفاصيل</a>
-                                    @if(empty($row['salary']))
-                                        <form method="POST" action="{{ route('hr.payroll.pay', ['employee' => $emp->id]) }}" class="inline-block pay-salary-form" data-employee-id="{{ $emp->id }}" data-year="{{ $year }}" data-month="{{ $month }}">
-                                            @csrf
-                                            <input type="hidden" name="year" value="{{ $year }}">
-                                            <input type="hidden" name="month" value="{{ $month }}">
-                                            <button type="submit" class="px-3 py-1 bg-green-600 text-white rounded text-sm">صرف</button>
-                                        </form>
-                                    @else
+                                    @if(!empty($row['salary']))
                                         <a href="{{ route('hr.payroll.print', $row['salary']->id) }}" target="_blank" class="px-3 py-1 bg-indigo-600 text-white rounded text-sm">طباعة</a>
                                     @endif
                                 </div>
@@ -111,53 +104,6 @@
 </script>
 @endsection
 
-@section('inline-scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-    // Intercept pay forms and perform AJAX submission
-    document.querySelectorAll('form.pay-salary-form').forEach(form => {
-        form.addEventListener('submit', async function(e){
-            e.preventDefault();
-            // disable submit button to prevent double-clicks
-            const btn = form.querySelector('button[type="submit"]');
-            if (btn) { btn.disabled = true; btn.classList.add('opacity-60', 'cursor-not-allowed'); }
-            const url = form.getAttribute('action');
-            const fm = new FormData(form);
-            // include CSRF token is already in form
-            try {
-                const res = await fetch(url, { method: 'POST', body: fm, headers: { 'X-Requested-With': 'XMLHttpRequest' }, credentials: 'same-origin' });
-                if (!res.ok) {
-                    const text = await res.text();
-                    if (btn) { btn.disabled = false; btn.classList.remove('opacity-60', 'cursor-not-allowed'); }
-                    alert('فشل صرف الراتب: ' + res.status + '\n' + text);
-                    return;
-                }
-                const data = await res.json();
-                if (data && data.salary_id) {
-                    // replace the form with a print link
-                    const printUrl = '{{ url('/') }}' + '/hr/payroll/print/' + data.salary_id;
-                    const a = document.createElement('a');
-                    a.href = printUrl; a.target = '_blank';
-                    a.className = 'px-3 py-1 bg-indigo-600 text-white rounded text-sm';
-                    a.textContent = 'طباعة';
-                    form.replaceWith(a);
-                    // show a small status message
-                    const status = document.createElement('div');
-                    status.className = 'mt-2 text-sm text-green-600';
-                    status.textContent = 'تم صرف الراتب.';
-                    a.parentNode.insertBefore(status, a.nextSibling);
-                    // try to open print window
-                    try { window.open(printUrl, '_blank'); } catch (err) { console.warn('Popup blocked'); }
-                }
-            } catch (err) {
-                console.error('Pay request error', err);
-                if (btn) { btn.disabled = false; btn.classList.remove('opacity-60', 'cursor-not-allowed'); }
-                alert('حدث خطأ أثناء صرف الراتب. راجع الكونسول.');
-            }
-        });
-    });
-});
-</script>
-@endsection
+{{-- removed pay-salary AJAX handler since pay button was removed --}}
 
 

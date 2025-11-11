@@ -26,25 +26,18 @@
                     </table>
                 </div>
 
-                <div class="mt-4">
-                    <form method="post" action="{{ route('hr.payroll.pay', ['employee' => $employee->id]) }}" class="w-1/2">
-                        @csrf
-                        <input type="hidden" name="year" value="{{ $period_start->year }}" />
-                        <input type="hidden" name="month" value="{{ $period_start->month }}" />
+                <div class="mt-4 w-1/2">
+                    <label class="block text-sm text-gray-700">تعديلات (موجب/سالب)</label>
+                    <input class="px-3 py-2 border rounded w-full bg-gray-100" value="{{ $adjustments ?? 0 }}" disabled />
 
-                        <label class="block text-sm text-gray-700">تعديلات (موجب/سالب)</label>
-                        <input class="px-3 py-2 border rounded w-full" name="adjustments" value="0" />
-
-                        <div class="mt-3 flex items-center gap-2">
-                            <button class="px-3 py-1 bg-green-600 text-white rounded" type="submit">صرف راتب وتسجيل</button>
-                            @if(session('status'))
-                                <div class="text-green-600">{{ session('status') }}</div>
-                            @endif
-                            @if(!empty($salary))
-                                <a href="{{ route('hr.payroll.print', $salary->id) }}" target="_blank" class="px-3 py-1 bg-indigo-600 text-white rounded">طباعة السند</a>
-                            @endif
-                        </div>
-                    </form>
+                    <div class="mt-3 flex items-center gap-2">
+                        @if(session('status'))
+                            <div class="text-green-600">{{ session('status') }}</div>
+                        @endif
+                        @if(!empty($salary))
+                            <a href="{{ route('hr.payroll.print', $salary->id) }}" target="_blank" class="px-3 py-1 bg-indigo-600 text-white rounded">طباعة السند</a>
+                        @endif
+                    </div>
                 </div>
             </div>
 

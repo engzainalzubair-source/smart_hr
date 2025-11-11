@@ -189,10 +189,13 @@ class PayrollController extends Controller
 
         // If dompdf available, make PDF
         if (class_exists(\Barryvdh\DomPDF\Facade\Pdf::class)) {
-            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('hr.payroll.report', [
+            // Use the reports style (same visual style as attendance PDF) and include absence details
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('hr.reports.payroll_pdf', [
                 'rows' => $rows,
                 'year' => $year,
                 'month' => $month,
+                // optional filters kept for parity with attendance report
+                'filters' => ['year' => $year, 'month' => $month],
             ]);
             return $pdf->download("payroll_report_{$year}_{$month}.pdf");
         }
