@@ -23,13 +23,13 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('password')
         ]);
 
-        // Seed HR comprehensive dataset (destructive - will wipe HR demo data)
+        // Seed HR dataset (destructive - will wipe HR demo data but will NOT delete users)
         if (app()->environment('local')) {
             // ensure the seeder class file is loaded (helps when composer autoload/cache is out-of-sync)
-            if (! class_exists(\Database\Seeders\HRComprehensiveSeeder::class)) {
-                require_once base_path('database/seeders/HRComprehensiveSeeder.php');
+            if (! class_exists(\Database\Seeders\ResetAndSeedHrDataSeeder::class)) {
+                require_once base_path('database/seeders/ResetAndSeedHrDataSeeder.php');
             }
-            $this->call(\Database\Seeders\HRComprehensiveSeeder::class);
+            $this->call(\Database\Seeders\ResetAndSeedHrDataSeeder::class);
         }
     }
 }

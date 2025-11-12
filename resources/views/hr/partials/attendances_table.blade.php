@@ -6,7 +6,7 @@
         </div>
         <div class="flex items-center gap-2">
             <form method="GET" action="{{ route('hr.attendances.index') }}" class="inline-flex items-center">
-                <input type="date" name="date" value="{{ $date ?? now()->toDateString() }}" class="border px-2 py-1 rounded text-sm" />
+                <input type="date" name="date" value="{{ $date ?? now()->toDateString() }}" lang="en" class="border px-2 py-1 rounded text-sm" />
                 <input name="q" type="search" value="{{ request('q') }}" placeholder="Search name..." class="px-2 py-1 border rounded text-sm" />
                 <select name="per_page" class="border px-2 py-1 rounded text-sm">
                     <option value="25" {{ request('per_page')==25 ? 'selected' : '' }}>25</option>
@@ -23,9 +23,9 @@
     <!-- Today's attendance switches -->
     <div class="mt-4">
         <div class="mb-2 flex items-center justify-between">
-            <h3 class="font-medium">Staff (Paginated)</h3>
+            <h3 class="font-medium  ">Staff (Paginated)</h3>
             <div class="flex items-center gap-2">
-                <button id="selectAllBtn" class="px-2 py-1 border rounded text-sm">Select All on Page</button>
+                <button id="selectAllBtn" class="px-1 py-2 border  rounded text-sm">Select All on Page</button>
                 <form id="bulkForm" method="POST" action="{{ route('hr.attendances.bulkMark') }}" class="inline-flex items-center gap-2">
                     @csrf
                     <input type="hidden" name="date" value="{{ $date ?? now()->toDateString() }}" />
@@ -38,18 +38,18 @@
                         <input type="time" name="check_out" step="1" class="border px-1 py-1 rounded text-sm time-input" placeholder="HH:MM:SS" />
                         <button type="button" class="now-btn px-2 py-1 text-xs bg-gray-200 rounded ml-1" title="Set current time">Now</button>
                     </label>
-                    <button type="button" data-status="present" class="bulk-action px-3 py-1 bg-green-600 text-white rounded text-sm">Mark Present</button>
-                    <button type="button" data-status="absent" class="bulk-action px-3 py-1 bg-gray-600 text-white rounded text-sm">Mark Absent</button>
-                    <button type="button" data-status="checkout" class="bulk-action px-3 py-1 bg-blue-600 text-white rounded text-sm">Mark Check-out</button>
+                    <button type="button" data-status="present" class=" px-2 py-2 bg-green-600 text-white rounded text-sm">Mark Present</button>
+                    <button type="button" data-status="absent" class=" px-2 py-2 bg-gray-600 text-white rounded text-sm">Mark Absent</button>
+                    <button type="button" data-status="checkout" class="px-2 py-2 bg-blue-600 text-white rounded text-sm">Mark Check-out</button>
                 </form>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        <div class="grid grid-cols-1  gap-2">
             @foreach($employees as $emp)
                 <div class="flex items-center justify-between p-2 border rounded">
                     <div>
-                        <div class="font-medium">{{ $emp->first_name }} {{ $emp->last_name }}</div>
+                        <div class="">{{ $emp->first_name }} {{ $emp->last_name }}</div>
                         <div class="text-sm text-gray-500">{{ optional($emp->department)->name }}</div>
                     </div>
                     <div class="flex items-center gap-3">
@@ -136,46 +136,157 @@
             checkboxes.forEach(cb => cb.checked = !allChecked);
         });
 
-        // "Now" buttons helper - sets the nearest time-input to current time (HH:MM:SS)
+        // helper: format a JS Date to "HH:MM"
+        function nowHHMM() {
+            const now = new Date();
+            const hh = String(now.getHours()).padStart(2,'0');
+            const mm = String(now.getMinutes()).padStart(2,'0');
+            return `${hh}:${mm}`;
+        }
+
+        // helper: normalize time string to "HH:MM" (drops seconds if present)
+        function normalizeToHHMM(val) {
+            if (!val) return '';
+            const parts = val.split(':');
+            if (parts.length >= 2) return `${parts[0].padStart(2,'0')}:${parts[1].padStart(2,'0')}`;
+            return val;
+        }
+
+        // "Now" buttons helper - sets the nearest time-input to current time (HH:MM)
         document.querySelectorAll('.now-btn').forEach(btn => {
             btn.addEventListener('click', function(){
-                // find nearest time input in the same container
                 const container = this.closest('label, div, form') || document;
                 const input = container.querySelector('.time-input');
                 if (!input) return;
-                const now = new Date();
-                const hh = String(now.getHours()).padStart(2,'0');
-                const mm = String(now.getMinutes()).padStart(2,'0');
-                const ss = String(now.getSeconds()).padStart(2,'0');
-                input.value = `${hh}:${mm}:${ss}`;
+                input.value = nowHHMM();
             });
         });
 
+        // --- AJAX submit for per-row attendance-mark forms ---
+        document.querySelectorAll('form.attendance-mark').forEach(form => {
+            form.addEventListener('submit', async function(e){
+                e.preventDefault();
+                // normalize inputs
+                const ci = form.querySelector('input[name="check_in"]');
+                const co = form.querySelector('input[name="check_out"]');
+                const statusSel = form.querySelector('select[name="status"]');
+                if (ci && ci.value) ci.value = normalizeToHHMM(ci.value);
+                if (co && co.value) {
+                    co.value = normalizeToHHMM(co.value);
+                    // if check_out provided but status absent -> set to present
+                    if (statusSel && statusSel.value === 'absent') statusSel.value = 'present';
+                }
+
+                const fd = new FormData(form);
+                // ensure CSRF
+                const token = document.querySelector('meta[name="csrf-token"]');
+                if (token && !fd.has('_token')) fd.append('_token', token.getAttribute('content'));
+
+                // disable submit button to prevent double submit
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn) submitBtn.disabled = true;
+
+                try {
+                    const resp = await fetch(form.action, { method: (form.getAttribute('method') || 'POST').toUpperCase(), body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest' }, credentials: 'same-origin' });
+
+                    if (!resp.ok) {
+                        if (resp.status === 422) {
+                            try {
+                                const json = await resp.json();
+                                const errors = json.errors || json;
+                                const messages = [];
+                                if (errors && typeof errors === 'object') {
+                                    for (const k in errors) {
+                                        if (!errors.hasOwnProperty(k)) continue;
+                                        const v = errors[k];
+                                        if (Array.isArray(v)) messages.push(v.join(', '));
+                                        else if (typeof v === 'string') messages.push(v);
+                                        else messages.push(JSON.stringify(v));
+                                    }
+                                } else if (typeof errors === 'string') messages.push(errors);
+                                alert('Validation error:\n' + messages.join('\n'));
+                                return;
+                            } catch (err) {
+                                alert('Validation failed (422)');
+                                return;
+                            }
+                        }
+                        throw new Error('Request failed: ' + resp.status);
+                    }
+
+                    const data = await resp.json();
+
+                    // update the form inputs to reflect normalized/saved values (server may return updated attendance)
+                    if (data.attendance) {
+                        const a = data.attendance;
+                        if (ci) ci.value = a.check_in ? a.check_in : ci.value;
+                        if (co) co.value = a.check_out ? a.check_out : co.value;
+                        if (statusSel && a.status) statusSel.value = a.status;
+                        // Update recent attendance table row if present (match by attendance id)
+                        if (a.id) {
+                            const rows = Array.from(document.querySelectorAll('table tbody tr'));
+                            for (const r of rows) {
+                                const firstTd = r.querySelector('td');
+                                if (!firstTd) continue;
+                                if (String(firstTd.textContent).trim() === String(a.id)) {
+                                    const tds = r.querySelectorAll('td');
+                                    // columns: #, Employee, Date, Check In, Check Out, Status, Actions
+                                    if (tds[3]) tds[3].textContent = a.check_in ?? '-';
+                                    if (tds[4]) tds[4].textContent = a.check_out ?? '-';
+                                    if (tds[5]) tds[5].textContent = a.status ?? tds[5].textContent;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    // show quick feedback
+                    const savedLabel = document.createElement('span');
+                    savedLabel.textContent = 'Saved';
+                    savedLabel.className = 'ml-2 text-sm text-green-600';
+                    // remove existing saved label if any
+                    const existing = form.querySelector('.saved-indicator');
+                    if (existing) existing.remove();
+                    savedLabel.classList.add('saved-indicator');
+                    form.appendChild(savedLabel);
+                    setTimeout(() => savedLabel.remove(), 2500);
+
+                } catch (err) {
+                    alert('Error: ' + (err.message || err));
+                } finally {
+                    if (submitBtn) submitBtn.disabled = false;
+                }
+            });
+        });
+
+        // --- bulk-action handler (unchanged, uses normalized values) ---
         document.querySelectorAll('.bulk-action').forEach(btn => {
             btn.addEventListener('click', async function(){
                 const status = this.dataset.status;
                 const selected = checkboxes.filter(cb => cb.checked).map(cb => cb.value);
                 if (!selected.length) { alert('Select at least one employee'); return; }
-                // build FormData because backend expects employee_ids[] fields
                 const form = document.getElementById('bulkForm');
                 const fd = new FormData();
-                // append CSRF token if present in the form
                 const token = form.querySelector('input[name=_token]');
                 if (token) fd.append('_token', token.value);
                 fd.append('date', form.querySelector('input[name=date]').value);
 
-                // If action is 'checkout' we send check_out (and keep status as present)
+                const rawCheckIn = form.querySelector('input[name=check_in]').value;
+                const rawCheckOut = form.querySelector('input[name=check_out]').value;
+                const checkIn = normalizeToHHMM(rawCheckIn);
+                const checkOut = normalizeToHHMM(rawCheckOut);
+
                 if (status === 'checkout') {
                     fd.append('status', 'present');
-                    const bulkCheckOut = form.querySelector('input[name=check_out]').value;
-                    if (!bulkCheckOut) { if (!confirm('No check-out time set. Proceed and clear check_out for selected employees?')) return; }
-                    if (bulkCheckOut) fd.append('check_out', bulkCheckOut);
+                    if (!checkOut) {
+                        if (!confirm('No check-out time set. Proceed and clear check_out for selected employees?')) return;
+                    } else {
+                        fd.append('check_out', checkOut);
+                    }
                 } else {
                     fd.append('status', status);
-                    const bulkCheckIn = form.querySelector('input[name=check_in]').value;
-                    const bulkCheckOut = form.querySelector('input[name=check_out]').value;
-                    if (bulkCheckIn) fd.append('check_in', bulkCheckIn);
-                    if (bulkCheckOut) fd.append('check_out', bulkCheckOut);
+                    if (checkIn) fd.append('check_in', checkIn);
+                    if (checkOut) fd.append('check_out', checkOut);
                 }
 
                 selected.forEach(id => fd.append('employee_ids[]', id));
@@ -183,7 +294,6 @@
                 try {
                     const res = await fetch(form.action, { method: 'POST', body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest' }, credentials: 'same-origin' });
 
-                    // Handle validation errors (422) and present messages to user
                     if (!res.ok) {
                         if (res.status === 422) {
                             try {
@@ -213,7 +323,6 @@
 
                     const json = await res.json();
                     alert('Marked ' + (json.marked ? json.marked.length : selected.length) + ' employees');
-                    // refresh page to update switches
                     location.reload();
                 } catch (err) {
                     alert('Error: ' + (err.message || err));
