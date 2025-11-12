@@ -15,11 +15,11 @@
                 </div>
                 <div>
                     <label>Period Start</label>
-                    <input type="date" name="period_start" value="{{ $performance->period_start }}" class="w-full p-2 border rounded">
+                    <input type="date" name="period_start" value="{{ $performance->period_start }}" lang="en" class="w-full p-2 border rounded">
                 </div>
                 <div>
                     <label>Period End</label>
-                    <input type="date" name="period_end" value="{{ $performance->period_end }}" class="w-full p-2 border rounded">
+                    <input type="date" name="period_end" value="{{ $performance->period_end }}" lang="en" class="w-full p-2 border rounded">
                 </div>
                 <div>
                     <label>Score</label>
@@ -51,11 +51,11 @@
                     </div>
                     <div>
                         <label>Period Start</label>
-                        <input type="date" name="period_start" value="{{ $performance->period_start }}" class="w-full p-2 border rounded">
+                        <input type="date" name="period_start" value="{{ $performance->period_start }}" lang="en" class="w-full p-2 border rounded">
                     </div>
                     <div>
                         <label>Period End</label>
-                        <input type="date" name="period_end" value="{{ $performance->period_end }}" class="w-full p-2 border rounded">
+                        <input type="date" name="period_end" value="{{ $performance->period_end }}" lang="en" class="w-full p-2 border rounded">
                     </div>
                     <div>
                         <label>Score</label>

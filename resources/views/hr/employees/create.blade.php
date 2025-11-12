@@ -18,7 +18,7 @@
                 </div>
                 <div>
                     <label>Hire Date</label>
-                    <input type="date" name="hire_date" class="w-full p-2 border rounded">
+                    <input type="date" name="hire_date" lang="en" class="w-full p-2 border rounded">
                 </div>
                 <div>
                     <label>Salary</label>
@@ -60,7 +60,7 @@
                     </div>
                     <div>
                         <label>Hire Date</label>
-                        <input type="date" name="hire_date" class="w-full p-2 border rounded">
+                        <input type="date" name="hire_date" lang="en" class="w-full p-2 border rounded">
                     </div>
                     <div>
                         <label>Salary</label>

@@ -29,7 +29,7 @@
                 </div>
                 <div>
                     <label>Issued At</label>
-                    <input type="date" name="issued_at" class="w-full p-2 border rounded">
+                    <input type="date" name="issued_at" lang="en" class="w-full p-2 border rounded">
                 </div>
             </div>
             <div class="mt-4">
@@ -71,7 +71,7 @@
                     </div>
                     <div>
                         <label>Issued At</label>
-                        <input type="date" name="issued_at" class="w-full p-2 border rounded">
+                        <input type="date" name="issued_at" lang="en" class="w-full p-2 border rounded">
                     </div>
                 </div>
                 <div class="mt-4">

@@ -14,7 +14,7 @@
                 </div>
                 <div>
                     <label>Date</label>
-                    <input type="date" name="date" class="w-full p-2 border rounded">
+                    <input type="date" name="date" lang="en" class="w-full p-2 border rounded">
                 </div>
                 <div>
                     <label>Check In</label>
@@ -99,7 +99,7 @@
                     </div>
                     <div>
                         <label>Date</label>
-                        <input type="date" name="date" class="w-full p-2 border rounded">
+                        <input type="date" name="date" lang="en" class="w-full p-2 border rounded">
                     </div>
                     <div>
                         <label>Check In</label>

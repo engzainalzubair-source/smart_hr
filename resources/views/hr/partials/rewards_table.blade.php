@@ -27,11 +27,11 @@
         </div>
         <div>
             <label class="text-sm text-gray-600">From</label>
-            <input type="date" name="from" value="{{ request('from') }}" class="mt-1 block w-full border rounded px-2 py-1" />
+            <input type="date" name="from" value="{{ request('from') }}" lang="en" class="mt-1 block w-full border rounded px-2 py-1" />
         </div>
         <div>
             <label class="text-sm text-gray-600">To</label>
-            <input type="date" name="to" value="{{ request('to') }}" class="mt-1 block w-full border rounded px-2 py-1" />
+            <input type="date" name="to" value="{{ request('to') }}" lang="en" class="mt-1 block w-full border rounded px-2 py-1" />
         </div>
         <div>
             <label class="text-sm text-gray-600">Department</label>

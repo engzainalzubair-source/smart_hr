@@ -162,11 +162,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
                             <label class="block text-sm font-medium">From Date</label>
-                            <input type="date" name="start_date" id="leave_start" class="mt-1 p-2 border rounded w-full" {{ isset($canEdit) && $canEdit ? '' : 'disabled' }} />
+                            <input type="date" name="start_date" id="leave_start" lang="en" class="mt-1 p-2 border rounded w-full" {{ isset($canEdit) && $canEdit ? '' : 'disabled' }} />
                         </div>
                         <div>
                             <label class="block text-sm font-medium">To Date</label>
-                            <input type="date" name="end_date" id="leave_end" class="mt-1 p-2 border rounded w-full" {{ isset($canEdit) && $canEdit ? '' : 'disabled' }} />
+                            <input type="date" name="end_date" id="leave_end" lang="en" class="mt-1 p-2 border rounded w-full" {{ isset($canEdit) && $canEdit ? '' : 'disabled' }} />
                         </div>
                         <div>
                             <label class="block text-sm font-medium">Leave Type</label>
